@@ -13,10 +13,37 @@ export default function Signup() {
     formState: { errors },
   } = useForm()
 
-  const onSubmit = (data) => {
-    console.log("Signup:", data)
-  }
+ // ...existing code...
+const onSubmit = async (data) => {
+  try {
+    const response = await fetch("http://localhost:3000/auth/register", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        name: data.name,
+        email: data.email,
+        password: data.password,
+        role: "owner", // or set dynamically if needed
+      }),
+    });
 
+    if (!response.ok) {
+      const errorData = await response.json();
+      alert(errorData.message || "Registration failed");
+      return;
+    }
+
+    const user = await response.json();
+    alert("Registration successful! Welcome, " + user.name);
+    // Optionally redirect to login or dashboard
+    // window.location.href = "/login";
+  } catch (error) {
+    alert("An error occurred. Please try again.");
+  }
+};
+// ...existing code...
   return (
     <div className="min-h-screen bg-[#FAF8F5] flex items-center justify-center px-6">
       <motion.div
@@ -45,7 +72,7 @@ export default function Signup() {
         {/* Right Side – Signup Form */}
         <div className="p-10 bg-white">
           <h2 className="text-2xl font-bold text-[#6B4226] mb-6">Create your account</h2>
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
+          <form  className="space-y-5" onSubmit={handleSubmit(onSubmit)}>
             <div>
               <Label htmlFor="name">Name</Label>
               <Input id="name" {...register("name", { required: "Name is required" })} />
@@ -104,6 +131,7 @@ export default function Signup() {
             </div>
 
             <Button
+          
               type="submit"
               className="w-full bg-[#6B4226] hover:bg-[#55341E] text-white text-base rounded-xl py-3"
             >

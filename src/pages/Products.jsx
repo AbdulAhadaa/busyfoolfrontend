@@ -40,7 +40,7 @@ export default function Products() {
   const [sortBy, setSortBy] = useState("margin");
   const [showAddProduct, setShowAddProduct] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
-  const [showIngredients, setShowIngredients] = useState({});
+
   const [viewMode, setViewMode] = useState("cards"); // cards or table
   const [showQuickWins, setShowQuickWins] = useState(true);
 
@@ -86,7 +86,7 @@ export default function Products() {
     },
     {
       id: 3,
-      name: "Lavender Honey Oat Latte",
+      name: "Oat Latte",
       category: "Coffee",
       sellPrice: 5.00,
       totalCost: 5.23,
@@ -107,7 +107,7 @@ export default function Products() {
     },
     {
       id: 4,
-      name: "Ham & Cheese Toastie",
+      name: "Ham Toastie",
       category: "Food",
       sellPrice: 6.50,
       totalCost: 3.20,
@@ -201,12 +201,7 @@ export default function Products() {
     }
   };
 
-  const toggleIngredients = (productId) => {
-    setShowIngredients(prev => ({
-      ...prev,
-      [productId]: !prev[productId]
-    }));
-  };
+
 
   const losingMoneyProducts = products.filter(p => p.status === "losing money");
   const totalDailyLoss = losingMoneyProducts.reduce((acc, p) => acc + (Math.abs(p.marginAmount) * p.sales), 0);
@@ -259,7 +254,15 @@ export default function Products() {
     );
   };
 
-  const EnhancedProductCard = ({ product }) => (
+  const EnhancedProductCard = ({ product }) => {
+  // Move the ingredients state inside this component
+  const [showIngredients, setShowIngredients] = useState(false);
+
+  const toggleIngredients = () => {
+    setShowIngredients(!showIngredients);
+  };
+
+  return (
     <motion.div
       layout
       initial={{ opacity: 0, scale: 0.95 }}
@@ -274,13 +277,13 @@ export default function Products() {
           <div className="flex justify-between items-start mb-3">
             <div className="flex-1">
               <div className="flex items-center gap-2 mb-1">
-                <h3 className="font-bold text-xl text-gray-900 group-hover:text-[#6B4226] transition-colors">
+                <h3 className="font-bold text-lg text-gray-900 group-hover:text-[#6B4226] transition-colors">
                   {product.name}
                 </h3>
                 {getTrendingIcon(product.trending)}
               </div>
               <div className="flex items-center gap-3">
-                <span className="text-sm text-gray-500 bg-gray-100 px-2 py-1 rounded-full">
+                <span className="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded-full">
                   {product.category}
                 </span>
                 {product.avgRating && (
@@ -303,7 +306,8 @@ export default function Products() {
               <motion.button 
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.95 }}
-                className="p-2 hover:bg-gray-100 rounded-xl transition-colors opacity-0 group-hover:opacity-100"              >
+                className="p-2 hover:bg-gray-100 rounded-xl transition-colors opacity-0 group-hover:opacity-100"
+              >
                 <Edit className="w-4 h-4 text-gray-600" />
               </motion.button>
               <motion.button 
@@ -324,26 +328,26 @@ export default function Products() {
           </div>
 
           <div className="grid grid-cols-2 gap-3 mb-4">
-            <div className="relative overflow-hidden bg-gradient-to-br from-blue-50 to-indigo-100 rounded-xl p-4 border border-blue-200">
-              <div className="absolute top-0 right-0 w-16 h-16 bg-blue-200 rounded-full -mr-8 -mt-8 opacity-30"></div>
-              <DollarSign className="w-5 h-5 text-blue-600 mb-2" />
+            <div className="relative overflow-hidden bg-gradient-to-br from-blue-50 to-indigo-100 rounded-xl p-3 border border-blue-200">
+              <div className="absolute top-0 right-0 w-12 h-12 bg-blue-200 rounded-full -mr-6 -mt-6 opacity-30"></div>
+              <DollarSign className="w-4 h-4 text-blue-600 mb-1" />
               <p className="text-xs font-medium text-blue-800 mb-1">Sell Price</p>
-              <p className="text-xl font-bold text-blue-900">£{product.sellPrice.toFixed(2)}</p>
+              <p className="text-lg font-bold text-blue-900">£{product.sellPrice.toFixed(2)}</p>
             </div>
             
-            <div className="relative overflow-hidden bg-gradient-to-br from-orange-50 to-red-100 rounded-xl p-4 border border-orange-200">
-              <div className="absolute top-0 right-0 w-16 h-16 bg-orange-200 rounded-full -mr-8 -mt-8 opacity-30"></div>
-              <Package className="w-5 h-5 text-orange-600 mb-2" />
+            <div className="relative overflow-hidden bg-gradient-to-br from-orange-50 to-red-100 rounded-xl p-3 border border-orange-200">
+              <div className="absolute top-0 right-0 w-12 h-12 bg-orange-200 rounded-full -mr-6 -mt-6 opacity-30"></div>
+              <Package className="w-4 h-4 text-orange-600 mb-1" />
               <p className="text-xs font-medium text-orange-800 mb-1">Total Cost</p>
-              <p className="text-xl font-bold text-orange-900">£{product.totalCost.toFixed(2)}</p>
+              <p className="text-lg font-bold text-orange-900">£{product.totalCost.toFixed(2)}</p>
             </div>
           </div>
 
-          <div className="relative bg-gradient-to-r from-gray-50 via-white to-gray-50 rounded-xl p-4 mb-4 border border-gray-200">
-            <div className="flex items-center justify-between mb-3">
+          <div className="relative bg-gradient-to-r from-gray-50 via-white to-gray-50 rounded-xl p-3 mb-4 border border-gray-200">
+            <div className="flex items-center justify-between mb-2">
               <div className="flex items-center gap-2">
                 {getMarginIcon(product.marginPercent)}
-                <span className="font-bold text-gray-800">Profit Margin</span>
+                <span className="font-bold text-sm text-gray-800">Profit Margin</span>
               </div>
               <div className="text-right">
                 <p className="text-xs text-gray-500">Sales Today</p>
@@ -356,15 +360,15 @@ export default function Products() {
             
             <div className="flex items-end justify-between">
               <div>
-                <p className={`text-3xl font-bold ${product.marginPercent >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                <p className={`text-2xl font-bold ${product.marginPercent >= 0 ? 'text-green-600' : 'text-red-600'}`}>
                   {product.marginPercent > 0 ? '+' : ''}{product.marginPercent.toFixed(1)}%
                 </p>
-                <p className="text- sm text-gray-600">
+                <p className="text-xs text-gray-600">
                   £{product.marginAmount > 0 ? '+' : ''}{product.marginAmount.toFixed(2)} per sale
                 </p>
               </div>
               
-              <div className="w-24 h-2 bg-gray-200 rounded-full overflow-hidden">
+              <div className="w-20 h-2 bg-gray-200 rounded-full overflow-hidden">
                 <motion.div
                   initial={{ width: 0 }}
                   animate={{ width: `${Math.max(0, Math.min(100, (product.marginPercent + 20) * 1.25))}%` }}
@@ -375,18 +379,18 @@ export default function Products() {
             </div>
           </div>
 
-          <div className={`rounded-xl p-4 mb-4 border-2 ${
+          <div className={`rounded-xl p-3 mb-4 border-2 ${
             product.marginAmount >= 0 
               ? 'bg-gradient-to-r from-green-50 to-emerald-50 border-green-200' 
               : 'bg-gradient-to-r from-red-50 to-pink-50 border-red-200'
           }`}>
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <Target className={`w-5 h-5 ${product.marginAmount >= 0 ? 'text-green-600' : 'text-red-600'}`} />
+                <Target className={`w-4 h-4 ${product.marginAmount >= 0 ? 'text-green-600' : 'text-red-600'}`} />
                 <span className="font-bold text-sm text-gray-800">Today's Impact</span>
               </div>
               <div className="text-right">
-                <p className={`font-bold text-2xl ${product.marginAmount >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                <p className={`font-bold text-xl ${product.marginAmount >= 0 ? 'text-green-600' : 'text-red-600'}`}>
                   £{product.marginAmount >= 0 ? '+' : ''}{(product.marginAmount * product.sales).toFixed(2)}
                 </p>
                 <p className="text-xs text-gray-600">
@@ -413,10 +417,9 @@ export default function Products() {
           )}
         </div>
 
-        <motion.button
-          onClick={() => toggleIngredients(product.id)}
+        <button
+          onClick={toggleIngredients}
           className="w-full flex items-center justify-between p-4 bg-gray-50 hover:bg-gray-100 transition-colors border-t border-gray-100"
-          whileHover={{ backgroundColor: "#f9fafb" }}
         >
           <div className="flex items-center gap-2">
             <Package className="w-4 h-4 text-gray-600" />
@@ -424,31 +427,29 @@ export default function Products() {
               Ingredients ({product.ingredients.length})
             </span>
           </div>
-          <motion.div
-            animate={{ rotate: showIngredients[product.id] ? 180 : 0 }}
-            transition={{ duration: 0.2 }}
+          <div
+            style={{
+              transform: showIngredients ? 'rotate(180deg)' : 'rotate(0deg)',
+              transition: 'transform 0.2s ease'
+            }}
           >
             <ChevronDown className="w-4 h-4 text-gray-600" />
-          </motion.div>
-        </motion.button>
+          </div>
+        </button>
 
         <AnimatePresence>
-          {showIngredients[product.id] && (
+          {showIngredients && (
             <motion.div
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: "auto" }}
               exit={{ opacity: 0, height: 0 }}
-              Milano
               transition={{ duration: 0.3 }}
               className="border-t border-gray-100"
             >
               <div className="p-4 space-y-2">
                 {product.ingredients.map((ingredient, idx) => (
-                  <motion.div
-                    key={idx}
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: idx * 0.05 }}
+                  <div
+                    key={`ingredient-${idx}`}
                     className="flex justify-between items-center p-3 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
                   >
                     <div className="flex items-center gap-3">
@@ -463,7 +464,7 @@ export default function Products() {
                     <span className="font-bold text-sm text-[#6B4226] bg-[#6B4226]/5 px-2 py-1 rounded">
                       £{ingredient.cost.toFixed(2)}
                     </span>
-                  </motion.div>
+                  </div>
                 ))}
               </div>
             </motion.div>
@@ -475,7 +476,7 @@ export default function Products() {
             <motion.button 
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
-              className="bg-[#6B4226] text-white py-3 px-4 rounded-xl text-sm font-semibold hover:bg-[#5a3620] transition-all duration-200 flex items-center justify-center gap-2 shadow-sm"
+              className="bg-[#6B4226] text-white py-2 px-4 rounded-xl text-sm font-semibold hover:bg-[#5a3620] transition-all duration-200 flex items-center justify-center gap-2 shadow-sm"
             >
               <Calculator className="w-4 h-4" />
               What-If
@@ -483,7 +484,7 @@ export default function Products() {
             <motion.button 
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
-              className="bg-white text-gray-700 py-3 px-4 rounded-xl text-sm font-semibold hover:bg-gray-100 transition-all duration-200 flex items-center justify-center gap-2 border border-gray-200 shadow-sm"
+              className="bg-white text-gray-700 py-2 px-4 rounded-xl text-sm font-semibold hover:bg-gray-100 transition-all duration-200 flex items-center justify-center gap-2 border border-gray-200 shadow-sm"
             >
               <RefreshCw className="w-4 h-4" />
               Clone
@@ -493,6 +494,7 @@ export default function Products() {
       </div>
     </motion.div>
   );
+};
 
   // Moved TableView component before the return statement
   const TableView = ({ products }) => (

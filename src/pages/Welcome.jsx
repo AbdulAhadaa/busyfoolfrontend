@@ -68,7 +68,7 @@ export default function Welcome() {
         
         <main className="p-4 sm:p-6 space-y-6 overflow-x-hidden w-full min-h-screen">
           <div className="mb-4">
-            <h1 className="text-3xl font-bold text-[#6B4226]">Welcome back, Alex 👋</h1>
+            <h1 className="text-3xl font-bold text-[#6B4226]">Welcome back 👋</h1>
             <p className="text-gray-600 text-sm">Here's a quick glance at your coffee business today.</p>
           </div>
 
