@@ -82,9 +82,35 @@ export const Sidebar = ({ isOpen, onClose }) => {
           ))}
         </nav>
 
-        {/* Logout - Fixed at bottom */}
+       
+       {/* Logout - Fixed at bottom */}
         <div className="p-4 border-t border-white/10 flex-shrink-0">
-          <button className="flex items-center w-full gap-3 px-4 py-3 rounded-xl text-white hover:bg-[#3a2416] hover:text-red-400 transition">
+          <button 
+            onClick={async () => {
+              try {
+                const response = await fetch('http://localhost:3000/auth/logout', {
+                  method: 'POST',
+                  credentials: 'include',
+                  headers: {
+                    'Content-Type': 'application/json',
+                  },
+                });
+                
+                if (response.ok) {
+                  // Clear any local storage/session storage if needed
+                  localStorage.clear();
+                  sessionStorage.clear();
+                  // Redirect to login page
+                  window.location.href = '/login';
+                } else {
+                  console.error('Logout failed');
+                }
+              } catch (error) {
+                console.error('Error during logout:', error);
+              }
+            }}
+            className="flex items-center w-full gap-3 px-4 py-3 rounded-xl text-white hover:bg-[#3a2416] hover:text-red-400 transition"
+          >
             <LogOut className="w-5 h-5" />
             <span>Log Out</span>
           </button>
